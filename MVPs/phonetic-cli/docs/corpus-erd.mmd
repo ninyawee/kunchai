@@ -1,0 +1,50 @@
+---
+title: Thai Phonetic Input - Corpus Architecture
+---
+erDiagram
+    WORDS {
+        int id PK
+        string thai "Thai text"
+        string romanized "Romanized form"
+        string soundex "Soundex code"
+        int frequency "Word frequency"
+        string category "word/country/province/name/wiki"
+    }
+
+    OSCAR_CORPUS {
+        string word
+        int frequency "5.7M entries"
+    }
+
+    COUNTRIES {
+        string thai "247 entries"
+    }
+
+    PROVINCES {
+        string thai "77 entries"
+    }
+
+    THAI_MALE_NAMES {
+        string thai "7,124 entries"
+    }
+
+    THAI_FEMALE_NAMES {
+        string thai "5,098 entries"
+    }
+
+    WIKIPEDIA_TITLES {
+        string thai "290,055 entries"
+    }
+
+    ROMANIZATION_OVERRIDES {
+        string thai "Key"
+        string romanized_list "Alternative spellings"
+    }
+
+    OSCAR_CORPUS ||--o{ WORDS : "top 50K filtered"
+    COUNTRIES ||--o{ WORDS : "freq 900K"
+    PROVINCES ||--o{ WORDS : "freq 800K"
+    THAI_MALE_NAMES ||--o{ WORDS : "freq 500K"
+    THAI_FEMALE_NAMES ||--o{ WORDS : "freq 500K"
+    WIKIPEDIA_TITLES ||--o{ WORDS : "freq 100K filtered"
+    ROMANIZATION_OVERRIDES ||..o{ WORDS : "alternative romanizations"

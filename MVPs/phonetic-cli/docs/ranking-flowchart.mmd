@@ -1,0 +1,44 @@
+---
+title: Thai Phonetic Input - Ranking Algorithm
+---
+flowchart TD
+    subgraph Input["Input Processing"]
+        A[User Input] --> B["Normalize<br/>(lowercase, strip, remove spaces)"]
+        B --> C["Generate Soundex Code"]
+    end
+
+    subgraph Query["Database Query"]
+        C --> D["Query SQLite DB"]
+        D --> E{"Match Type?"}
+        E -->|"romanized = input"| F1["Exact Match<br/>base = 100"]
+        E -->|"soundex = input_sx"| F2["Soundex Exact<br/>base = 90 - dist*10"]
+        E -->|"soundex LIKE prefix%"| F3["Soundex Partial<br/>base = 70 - dist*10"]
+    end
+
+    subgraph Scoring["Score Calculation"]
+        F1 --> G["N-gram Boost"]
+        F2 --> G
+        F3 --> G
+        G --> G1["Bi-gram Similarity * 15"]
+        G --> G2["Tri-gram Similarity * 10"]
+        G1 --> H["Prefix Boost"]
+        G2 --> H
+        H --> H1{{"First 3 chars match?"}}
+        H1 -->|Yes| H2["+5 points"]
+        H1 -->|No| H3["+0 points"]
+        H2 --> I["Frequency Boost"]
+        H3 --> I
+        I --> I1["min(10, log10(freq) / 2)"]
+    end
+
+    subgraph Output["Result"]
+        I1 --> J["Sum All Boosts"]
+        J --> K["Sort by Score DESC"]
+        K --> L["Return Top N Matches"]
+    end
+
+    style A fill:#e1f5fe
+    style L fill:#c8e6c9
+    style F1 fill:#fff9c4
+    style F2 fill:#fff9c4
+    style F3 fill:#fff9c4

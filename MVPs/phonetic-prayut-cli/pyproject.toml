@@ -1,0 +1,14 @@
+[project]
+name = "phonetic-prayut-cli"
+version = "0.1.0"
+description = "Thai phonetic input using prayut_and_somchaip cross-language soundex"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pythainlp>=5.1.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
